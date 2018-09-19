@@ -50,6 +50,8 @@ namespace UnityChan
 		static int jumpState = Animator.StringToHash ("Base Layer.Jump");
 		static int restState = Animator.StringToHash ("Base Layer.Rest");
 
+        private bool isGoal = false;
+
 		// 初期化
 		void Start ()
 		{
@@ -69,6 +71,8 @@ namespace UnityChan
 		// 以下、メイン処理.リジッドボディと絡めるので、FixedUpdate内で処理を行う.
 		void FixedUpdate ()
 		{
+            if (isGoal) return;
+
 			float h = Input.GetAxis ("Horizontal");				// 入力デバイスの水平軸をhで定義
 			float v = Input.GetAxis ("Vertical");				// 入力デバイスの垂直軸をvで定義
 			anim.SetFloat ("Speed", v);							// Animator側で設定している"Speed"パラメタにvを渡す
@@ -101,6 +105,7 @@ namespace UnityChan
 					}
 				}
 			}
+            
 		
 
 			// 上下のキー入力でキャラクターを移動させる
@@ -177,8 +182,22 @@ namespace UnityChan
 				}
 			}
 		}
-
-		void OnGUI ()
+        private void OnCollisionEnter(Collision col)
+        {
+            switch (col.gameObject.name)
+            {
+                case "Goal":
+                    transform.Find("Main Camera/GOAL").gameObject.SetActive(true);
+                    this.isGoal = true;
+                    break;
+                case "Plane":
+                    transform.Find("Main Camera/GameOver").gameObject.SetActive(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+        void OnGUI ()
 		{
 			GUI.Box (new Rect (Screen.width - 260, 10, 250, 150), "Interaction");
 			GUI.Label (new Rect (Screen.width - 245, 30, 250, 30), "Up/Down Arrow : Go Forwald/Go Back");
