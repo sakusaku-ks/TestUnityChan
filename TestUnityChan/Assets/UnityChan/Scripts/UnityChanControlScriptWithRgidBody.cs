@@ -24,9 +24,9 @@ namespace UnityChan
 
 		// 以下キャラクターコントローラ用パラメタ
 		// 前進速度
-		public float forwardSpeed = 7.0f;
+		public float forwardSpeed = 2.0f;
 		// 後退速度
-		public float backwardSpeed = 5.0f;
+		public float backwardSpeed = 1.5f;
 		// 旋回速度
 		public float rotateSpeed = 6.0f;
 		// ジャンプ威力
@@ -51,6 +51,7 @@ namespace UnityChan
 		static int restState = Animator.StringToHash ("Base Layer.Rest");
 
         private bool isGoal = false;
+        private bool isSlideFloor = false;
 
 		// 初期化
 		void Start ()
@@ -71,6 +72,7 @@ namespace UnityChan
 		// 以下、メイン処理.リジッドボディと絡めるので、FixedUpdate内で処理を行う.
 		void FixedUpdate ()
 		{
+            //if (isGoal && Input.GetKey(KeyCode.R)) 
             if (isGoal) return;
 
 			float h = Input.GetAxis ("Horizontal");				// 入力デバイスの水平軸をhで定義
@@ -105,11 +107,9 @@ namespace UnityChan
 					}
 				}
 			}
-            
-		
 
-			// 上下のキー入力でキャラクターを移動させる
-			transform.localPosition += velocity * Time.fixedDeltaTime;
+            // 上下のキー入力でキャラクターを移動させる
+            transform.localPosition += velocity * Time.fixedDeltaTime;
 
 			// 左右のキー入力でキャラクタをY軸で旋回させる
 			transform.Rotate (0, h * rotateSpeed, 0);	
@@ -181,11 +181,30 @@ namespace UnityChan
 					anim.SetBool ("Rest", false);
 				}
 			}
+
+
 		}
-        private void OnCollisionEnter(Collision col)
+
+        void OnCollisionExit(Collision col)
         {
             switch (col.gameObject.name)
             {
+                case "Slide":
+                    Debug.LogWarning("UnityChan On NormalFloor!");
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void OnCollisionEnter(Collision col)
+        {
+            this.isSlideFloor = false;
+
+            switch (col.gameObject.name)
+            {
+                case "Slide":
+                    Debug.LogWarning("UnityChan On SlideFloor!");
+                    break;
                 case "Goal":
                     transform.Find("Main Camera/GOAL").gameObject.SetActive(true);
                     this.isGoal = true;
