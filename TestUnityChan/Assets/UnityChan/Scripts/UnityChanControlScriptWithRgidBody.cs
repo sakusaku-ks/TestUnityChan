@@ -52,6 +52,7 @@ namespace UnityChan
 
         private bool isGoal = false;
         private bool isSlideFloor = false;
+        private bool isGameOver = false;
 
 		// 初期化
 		void Start ()
@@ -72,8 +73,8 @@ namespace UnityChan
 		// 以下、メイン処理.リジッドボディと絡めるので、FixedUpdate内で処理を行う.
 		void FixedUpdate ()
 		{
-            //if (isGoal && Input.GetKey(KeyCode.R)) 
-            if (isGoal) return;
+            if ((this.isGoal || this.isGameOver) && Input.GetKey(KeyCode.R)) UnityEngine.SceneManagement.SceneManager.LoadScene("MiniGame1");
+            if (this.isGoal) return;
 
 			float h = Input.GetAxis ("Horizontal");				// 入力デバイスの水平軸をhで定義
 			float v = Input.GetAxis ("Vertical");				// 入力デバイスの垂直軸をvで定義
@@ -127,7 +128,7 @@ namespace UnityChan
 		// JUMP中の処理
 		// 現在のベースレイヤーがjumpStateの時
 		else if (currentBaseState.nameHash == jumpState) {
-				cameraObject.SendMessage ("setCameraPositionJumpView");	// ジャンプ中のカメラに変更
+				//cameraObject.SendMessage ("setCameraPositionJumpView");	// ジャンプ中のカメラに変更
 				// ステートがトランジション中でない場合
 				if (!anim.IsInTransition (0)) {
 				
@@ -199,7 +200,7 @@ namespace UnityChan
         private void OnCollisionEnter(Collision col)
         {
             this.isSlideFloor = false;
-            Debug.Log("★" + col.gameObject.name);
+            Debug.Log(col.gameObject.name);
             switch (col.gameObject.name)
             {
                 case "Slide":
@@ -211,6 +212,7 @@ namespace UnityChan
                     break;
                 case "Plane":
                     transform.Find("Main Camera/GameOver").gameObject.SetActive(true);
+                    this.isGameOver = true;
                     break;
                 default:
                     break;
