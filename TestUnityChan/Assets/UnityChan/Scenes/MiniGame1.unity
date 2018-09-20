@@ -327,12 +327,12 @@ GameObject:
   - component: {fileID: 22889579}
   - component: {fileID: 22889578}
   m_Layer: 0
-  m_Name: Goal
+  m_Name: GOAL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &22889578
 MeshRenderer:
   m_ObjectHideFlags: 0

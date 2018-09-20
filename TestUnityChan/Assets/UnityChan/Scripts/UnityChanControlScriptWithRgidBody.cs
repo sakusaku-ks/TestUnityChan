@@ -199,7 +199,7 @@ namespace UnityChan
         private void OnCollisionEnter(Collision col)
         {
             this.isSlideFloor = false;
-
+            Debug.Log("★" + col.gameObject.name);
             switch (col.gameObject.name)
             {
                 case "Slide":
